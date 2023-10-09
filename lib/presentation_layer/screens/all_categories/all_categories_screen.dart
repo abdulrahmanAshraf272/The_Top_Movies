@@ -1,13 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:the_top_movies/constants/my_colors.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/arrow_back.dart';
+import 'package:the_top_movies/presentation_layer/widgets/arrow_back.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/category_title_and_seeAll.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/movie_item.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/search_feild.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/top_title_header.dart';
+import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
 class AllCategories extends StatelessWidget {
   const AllCategories({super.key});
@@ -52,12 +50,13 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    return SafeArea(
+    return const SafeArea(
       child: Column(
         children: [
           ArrowBack(),
-          TopTextHeader(),
+          TopTextHeader(
+            text: 'What would you like to watch?',
+          ),
           SearchFeild(),
           Expanded(
             child: SingleChildScrollView(
@@ -65,11 +64,11 @@ class Body extends StatelessWidget {
               child: Column(
                 children: [
                   CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(screenHeight: screenHeight),
+                  MoviesList(),
                   CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(screenHeight: screenHeight),
+                  MoviesList(),
                   CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(screenHeight: screenHeight),
+                  MoviesList(),
                 ],
               ),
             ),
@@ -83,13 +82,11 @@ class Body extends StatelessWidget {
 class MoviesList extends StatelessWidget {
   const MoviesList({
     super.key,
-    required this.screenHeight,
   });
-
-  final double screenHeight;
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
     return SizedBox(
       height: screenHeight * 0.26,
       child: ListView.builder(

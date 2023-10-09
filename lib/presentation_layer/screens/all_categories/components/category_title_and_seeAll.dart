@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:the_top_movies/presentation_layer/screens/category_selected.dart/category_selected_screen.dart';
 
 class CategoryTitleAndSeeAll extends StatelessWidget {
   final String title;
@@ -19,7 +20,8 @@ class CategoryTitleAndSeeAll extends StatelessWidget {
           Spacer(),
           TextButton(
             onPressed: () {
-              // Add your button click logic here
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CategorySelected()));
             },
             child: Text(
               'see all',

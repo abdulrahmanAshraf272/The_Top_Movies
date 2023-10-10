@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:the_top_movies/constants/my_colors.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
+import 'package:the_top_movies/presentation_layer/screens/category_selected.dart/components/random_button.dart';
+import 'package:the_top_movies/presentation_layer/screens/movie_details/movie_details_screen.dart';
 import 'package:the_top_movies/presentation_layer/widgets/arrow_back.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
@@ -35,7 +37,12 @@ class CategorySelected extends StatelessWidget {
                 color: MyColors.green,
               )),
           Positioned.fill(child: Body()),
-          Positioned(bottom: 15, right: 15, child: RandomButton())
+          Positioned(
+              bottom: 15,
+              right: 15,
+              child: RandomButton(
+                press: () {},
+              ))
         ],
       ),
     );
@@ -83,44 +90,6 @@ class Body extends StatelessWidget {
   }
 }
 
-class RandomButton extends StatelessWidget {
-  const RandomButton({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: 63.w,
-          width: 63.w,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 30, // Layer blur
-                color: MyColors.pink.withOpacity(0.4),
-                spreadRadius: 10,
-                // Transparent color for the blur
-              ),
-            ],
-          ),
-        ),
-        Container(
-          height: 63.w,
-          width: 63.w,
-          decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black.withOpacity(0.5),
-              border: Border.all(color: MyColors.pink, width: 3)),
-          child: Image.asset('assets/icons/rendom.png'),
-        ),
-      ],
-    );
-  }
-}
-
 class MovieItem extends StatelessWidget {
   const MovieItem({
     super.key,
@@ -131,7 +100,10 @@ class MovieItem extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MovieDetails()));
+      },
       child: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

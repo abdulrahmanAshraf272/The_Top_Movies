@@ -4,6 +4,7 @@ import 'package:the_top_movies/constants/my_colors.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
 import 'package:the_top_movies/presentation_layer/screens/category_selected.dart/components/random_button.dart';
 import 'package:the_top_movies/presentation_layer/screens/movie_details/movie_details_screen.dart';
+import 'package:the_top_movies/presentation_layer/screens/random_movie/random_movie_screen.dart';
 import 'package:the_top_movies/presentation_layer/widgets/arrow_back.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
@@ -41,7 +42,12 @@ class CategorySelected extends StatelessWidget {
               bottom: 15,
               right: 15,
               child: RandomButton(
-                press: () {},
+                press: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RandomMovieScreen()));
+                },
               ))
         ],
       ),

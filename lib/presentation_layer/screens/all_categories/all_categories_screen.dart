@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:the_top_movies/business_logic_layer/cubit/movies_cubit.dart';
+import 'package:the_top_movies/business_logic_layer/cubit/result_state.dart';
 import 'package:the_top_movies/constants/my_colors.dart';
+import 'package:the_top_movies/data_layer/models/movie.dart';
+import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
 import 'package:the_top_movies/presentation_layer/widgets/arrow_back.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/category_title_and_seeAll.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
@@ -7,8 +13,20 @@ import 'package:the_top_movies/presentation_layer/screens/all_categories/compone
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/search_feild.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
-class AllCategories extends StatelessWidget {
+class AllCategories extends StatefulWidget {
   const AllCategories({super.key});
+
+  @override
+  State<AllCategories> createState() => _AllCategoriesState();
+}
+
+class _AllCategoriesState extends State<AllCategories> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<MovieCubit>(context).emitgetBestActoinMovies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +61,24 @@ class AllCategories extends StatelessWidget {
   }
 }
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   const Body({
     super.key,
   });
 
   @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  List<Movie> bestActionMovies = [];
+  List<Movie> bestComedyMovies = [];
+  @override
   Widget build(BuildContext context) {
-    return const SafeArea(
+    return SafeArea(
       child: Column(
         children: [
-          ArrowBack(),
+          RandomMovieButton(),
           TopTextHeader(
             text: 'What would you like to watch?',
           ),
@@ -61,15 +86,33 @@ class Body extends StatelessWidget {
           Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
-              child: Column(
-                children: [
-                  CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(),
-                  CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(),
-                  CategoryTitleAndSeeAll(title: 'Action Movies'),
-                  MoviesList(),
-                ],
+              child: BlocBuilder<MovieCubit, ResultState<dynamic>>(
+                builder: (context, ResultState<dynamic> state) {
+                  return state.when(idle: () {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }, loading: () {
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }, success: (dynamic movies) {
+                    bestActionMovies = movies['action'];
+                    bestComedyMovies = movies['comedy'];
+                    return Column(
+                      children: [
+                        CategoryTitleAndSeeAll(title: 'Action Movies'),
+                        MoviesList(),
+                        CategoryTitleAndSeeAll(title: 'Comedy Movies'),
+                        MoviesList(),
+                        CategoryTitleAndSeeAll(title: 'Action Movies'),
+                        MoviesList(),
+                      ],
+                    );
+                  }, error: (NetworkExceptions error) {
+                    return Container();
+                  });
+                },
               ),
             ),
           )
@@ -95,6 +138,45 @@ class MoviesList extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),
         itemBuilder: ((context, index) => MovieItem()),
+      ),
+    );
+  }
+}
+
+class RandomMovieButton extends StatelessWidget {
+  const RandomMovieButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: GestureDetector(
+        onTap: () {},
+        child: Container(
+          height: 46,
+          width: 46,
+          margin: EdgeInsets.only(left: 20),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            border: Border.all(
+              color: MyColors.green.withOpacity(0.5), // Stroke color
+              width: 3, // Stroke width
+            ),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 40, // Blur radius
+                color: Colors.transparent, // Transparent color for the blur
+              ),
+            ],
+          ),
+          child: Center(
+            child: Image.asset(
+              'assets/icons/rendom.png',
+              width: 28,
+            ),
+          ),
+        ),
       ),
     );
   }

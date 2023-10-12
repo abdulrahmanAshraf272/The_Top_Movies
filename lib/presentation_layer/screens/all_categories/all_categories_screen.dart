@@ -6,11 +6,10 @@ import 'package:the_top_movies/business_logic_layer/cubit/result_state.dart';
 import 'package:the_top_movies/constants/my_colors.dart';
 import 'package:the_top_movies/data_layer/models/movie.dart';
 import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
-import 'package:the_top_movies/presentation_layer/widgets/arrow_back.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/category_title_and_seeAll.dart';
+import 'package:the_top_movies/presentation_layer/screens/movie_details/movie_details_screen.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/movie_item.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/search_feild.dart';
+import 'package:the_top_movies/presentation_layer/screens/random_movie/random_movie_screen.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
 class AllCategories extends StatefulWidget {
@@ -21,13 +20,6 @@ class AllCategories extends StatefulWidget {
 }
 
 class _AllCategoriesState extends State<AllCategories> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    BlocProvider.of<MovieCubit>(context).emitgetBestActoinMovies();
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -71,8 +63,36 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  List<Movie> bestActionMovies = [];
-  List<Movie> bestComedyMovies = [];
+  int selectedIndex = 0;
+  List<String> categories = [
+    'all',
+    'action',
+    'comedy',
+    'adventure',
+    'animation',
+    'biography',
+    'crime',
+    'drama',
+    'family',
+    'fantasy',
+    'history',
+    'horror',
+    'mystery',
+    'romance',
+    'sci-fi',
+    'sport',
+    'thriller',
+    'war',
+    'western',
+    'documentary'
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<MovieCubit>(context).emitgetBestMovies('action');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -83,6 +103,18 @@ class _BodyState extends State<Body> {
             text: 'What would you like to watch?',
           ),
           SearchFeild(),
+          SizedBox(
+            height: 35,
+            child: ListView.builder(
+                physics: BouncingScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.only(right: 20),
+                itemCount: categories.length,
+                itemBuilder: (context, index) => buildGenreItem(index)),
+          ),
+          SizedBox(
+            height: 20,
+          ),
           Expanded(
             child: SingleChildScrollView(
               physics: BouncingScrollPhysics(),
@@ -90,27 +122,45 @@ class _BodyState extends State<Body> {
                 builder: (context, ResultState<dynamic> state) {
                   return state.when(idle: () {
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Colors.white.withOpacity(0.6),
+                      ),
                     );
                   }, loading: () {
                     return Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        color: Colors.white.withOpacity(0.6),
+                      ),
                     );
                   }, success: (dynamic movies) {
-                    bestActionMovies = movies['action'];
-                    bestComedyMovies = movies['comedy'];
                     return Column(
                       children: [
-                        CategoryTitleAndSeeAll(title: 'Action Movies'),
-                        MoviesList(),
-                        CategoryTitleAndSeeAll(title: 'Comedy Movies'),
-                        MoviesList(),
-                        CategoryTitleAndSeeAll(title: 'Action Movies'),
-                        MoviesList(),
+                        GridView.builder(
+                            itemCount: movies.length,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              childAspectRatio: 0.68,
+                              crossAxisSpacing: 0,
+                              mainAxisSpacing: 0,
+                            ),
+                            shrinkWrap: true,
+                            physics: const ClampingScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              return MovieItem(
+                                movie: movies[index],
+                              );
+                            })
                       ],
                     );
                   }, error: (NetworkExceptions error) {
-                    return Container();
+                    return Center(
+                      child: Text(
+                        NetworkExceptions.getErrorMessage(error),
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    );
                   });
                 },
               ),
@@ -120,24 +170,110 @@ class _BodyState extends State<Body> {
       ),
     );
   }
+
+  Widget buildGenreItem(int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+          BlocProvider.of<MovieCubit>(context)
+              .emitgetBestMovies(categories[index]);
+        });
+      },
+      child: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(left: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: selectedIndex == index
+                ? MyColors.green.withOpacity(0.1)
+                : Colors.transparent),
+        child: Text(
+          categories[index],
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: selectedIndex == index
+                  ? MyColors.green.withOpacity(0.7)
+                  : Colors.white.withOpacity(0.4)),
+        ),
+      ),
+    );
+  }
 }
 
-class MoviesList extends StatelessWidget {
-  const MoviesList({
-    super.key,
-  });
+class MovieItem extends StatelessWidget {
+  final Movie movie;
+  const MovieItem({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: screenHeight * 0.26,
-      child: ListView.builder(
-        padding: EdgeInsets.only(left: 20, right: 4),
-        itemCount: 5,
-        scrollDirection: Axis.horizontal,
-        physics: BouncingScrollPhysics(),
-        itemBuilder: ((context, index) => MovieItem()),
+    double screenWidth = MediaQuery.of(context).size.width;
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => MovieDetails(
+                      movie: movie,
+                    )));
+      },
+      child: Center(
+        child: SizedBox(
+          width: screenWidth / 2 - 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  height: screenHeight * 0.25,
+                  //width: screenWidth / 2 - 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: Hero(
+                      tag: 'movie_image${movie.id}',
+                      child: Image.network(
+                        movie.largeCoverImage!,
+                        width: screenWidth / 2 -
+                            40, // Replace with the actual URL of the image
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(left: 22, top: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${movie.title}',
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.white.withOpacity(0.9)),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '${movie.year}',
+                        style: TextStyle(
+                            fontSize: 10.sp,
+                            color: Colors.white.withOpacity(0.5)),
+                      )
+                    ],
+                  ))
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -151,7 +287,10 @@ class RandomMovieButton extends StatelessWidget {
     return Align(
       alignment: Alignment.topLeft,
       child: GestureDetector(
-        onTap: () {},
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => RandomMovieScreen()));
+        },
         child: Container(
           height: 46,
           width: 46,
@@ -176,6 +315,82 @@ class RandomMovieButton extends StatelessWidget {
               width: 28,
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class Genres extends StatefulWidget {
+  const Genres({super.key});
+
+  @override
+  State<Genres> createState() => _GenresState();
+}
+
+class _GenresState extends State<Genres> {
+  List<String> categories = [
+    'all',
+    'action',
+    'comedy',
+    'adventure',
+    'animation',
+    'biography',
+    'crime',
+    'drama',
+    'family',
+    'fantasy',
+    'history',
+    'horror',
+    'mystery',
+    'romance',
+    'sci-fi',
+    'sport',
+    'thriller',
+    'war',
+    'western',
+    'documentary'
+  ];
+
+  int selectedIndex = 0;
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 35,
+      child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.only(right: 20),
+          itemCount: categories.length,
+          itemBuilder: (context, index) => buildGenreItem(index)),
+    );
+  }
+
+  Widget buildGenreItem(int index) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedIndex = index;
+          BlocProvider.of<MovieCubit>(context)
+              .emitgetBestMovies(categories[index]);
+        });
+      },
+      child: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(left: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: selectedIndex == index
+                ? MyColors.green.withOpacity(0.1)
+                : Colors.transparent),
+        child: Text(
+          categories[index],
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: selectedIndex == index
+                  ? MyColors.green.withOpacity(0.7)
+                  : Colors.white.withOpacity(0.4)),
         ),
       ),
     );

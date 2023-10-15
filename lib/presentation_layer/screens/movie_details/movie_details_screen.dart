@@ -38,6 +38,7 @@ class MovieDetails extends StatelessWidget {
           ),
           Container(
             width: screenWidth,
+            height: screenHeight * 0.5,
             decoration: BoxDecoration(
               boxShadow: [
                 BoxShadow(
@@ -56,13 +57,13 @@ class MovieDetails extends StatelessWidget {
               children: [
                 MovieName(name: movie.title!),
                 YearAndGenre(
-                  year: 2023,
-                  genre: 'Action-Adventure-Fantasy',
+                  year: movie.year!,
+                  genre: movie.genres!,
                 ),
-                space(),
-                LikesNumber(
-                  likesNumber: 1233,
-                ),
+                // space(),
+                // LikesNumber(
+                //   likesNumber: 1233,
+                // ),
                 space(),
                 Rate(
                   rate: movie.rating!,
@@ -73,49 +74,49 @@ class MovieDetails extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: AutoSizeText(
-                    'Powered with incredible speed, Sonic The Hedgehog embraces his new home on Earth. That is, until Sonic sparks the attention of super-uncool evil genius Dr. Robotnik. Now it’s super-villain vs. super-sonic in an all-out race across the globe to stop Robotnik from using Sonic’s unique power for world domination.',
+                    '${movie.summary}',
                     textAlign: TextAlign.center,
-                    minFontSize: 7,
-                    maxLines: 6,
+                    minFontSize: 10,
+                    maxLines: 13,
                     style: TextStyle(
                         fontSize: 13.sp, color: Colors.white.withOpacity(0.75)),
                   ),
                 ),
-                SizedBox(
-                  height: 24.h,
-                ),
-                customDivider(screenWidth),
-                space(),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Text(
-                      'Casts',
-                      style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                GridView.builder(
-                    itemCount: 6,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 2.5,
-                      crossAxisSpacing: 0,
-                      mainAxisSpacing: 0,
-                    ),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) {
-                      return CastItem();
-                    })
+                // SizedBox(
+                //   height: 24.h,
+                // ),
+                // customDivider(screenWidth),
+                // space(),
+                // Align(
+                //   alignment: Alignment.topLeft,
+                //   child: Padding(
+                //     padding: const EdgeInsets.only(left: 20),
+                //     child: Text(
+                //       'Casts',
+                //       style: TextStyle(
+                //           fontSize: 20.sp,
+                //           fontWeight: FontWeight.bold,
+                //           color: Colors.white),
+                //     ),
+                //   ),
+                // ),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                // GridView.builder(
+                //     itemCount: 6,
+                //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                //       crossAxisCount: 2,
+                //       childAspectRatio: 2.5,
+                //       crossAxisSpacing: 0,
+                //       mainAxisSpacing: 0,
+                //     ),
+                //     shrinkWrap: true,
+                //     physics: NeverScrollableScrollPhysics(),
+                //     padding: EdgeInsets.zero,
+                //     itemBuilder: (context, index) {
+                //       return CastItem();
+                //     })
               ],
             ),
           )

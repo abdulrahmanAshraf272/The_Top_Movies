@@ -12,6 +12,8 @@ import 'package:the_top_movies/presentation_layer/screens/all_categories/compone
 import 'package:the_top_movies/presentation_layer/screens/random_movie/random_movie_screen.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
+List<Movie> _movies = [];
+
 class AllCategories extends StatefulWidget {
   const AllCategories({super.key});
 
@@ -90,7 +92,7 @@ class _BodyState extends State<Body> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    BlocProvider.of<MovieCubit>(context).emitgetBestMovies('action');
+    BlocProvider.of<MovieCubit>(context).emitgetBestMovies('');
   }
 
   @override
@@ -106,39 +108,43 @@ class _BodyState extends State<Body> {
           SizedBox(
             height: 35,
             child: ListView.builder(
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(right: 20),
+                padding: const EdgeInsets.only(right: 20),
                 itemCount: categories.length,
                 itemBuilder: (context, index) => buildGenreItem(index)),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Expanded(
             child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: const BouncingScrollPhysics(),
               child: BlocBuilder<MovieCubit, ResultState<dynamic>>(
                 builder: (context, ResultState<dynamic> state) {
                   return state.when(idle: () {
+                    print('idle state');
                     return Center(
                       child: CircularProgressIndicator(
                         color: Colors.white.withOpacity(0.6),
                       ),
                     );
                   }, loading: () {
+                    print('loading state');
                     return Center(
                       child: CircularProgressIndicator(
                         color: Colors.white.withOpacity(0.6),
                       ),
                     );
                   }, success: (dynamic movies) {
+                    print('hello world');
+                    _movies = movies;
                     return Column(
                       children: [
                         GridView.builder(
                             itemCount: movies.length,
                             gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               childAspectRatio: 0.68,
                               crossAxisSpacing: 0,
@@ -149,7 +155,7 @@ class _BodyState extends State<Body> {
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
                               return MovieItem(
-                                movie: movies[index],
+                                movie: _movies[index],
                               );
                             })
                       ],
@@ -158,7 +164,8 @@ class _BodyState extends State<Body> {
                     return Center(
                       child: Text(
                         NetworkExceptions.getErrorMessage(error),
-                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        style:
+                            const TextStyle(fontSize: 18, color: Colors.white),
                       ),
                     );
                   });
@@ -182,8 +189,8 @@ class _BodyState extends State<Body> {
       },
       child: Container(
         alignment: Alignment.center,
-        margin: EdgeInsets.only(left: 20),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+        margin: const EdgeInsets.only(left: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: selectedIndex == index
@@ -237,12 +244,17 @@ class MovieItem extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: Hero(
                       tag: 'movie_image${movie.id}',
-                      child: Image.network(
-                        movie.largeCoverImage!,
-                        width: screenWidth / 2 -
-                            40, // Replace with the actual URL of the image
-                        fit: BoxFit.cover,
-                      ),
+                      child: Container(
+                          width: screenWidth / 2 - 40,
+                          color: Colors.white.withOpacity(0.1),
+                          child: movie.largeCoverImage != null
+                              ? FadeInImage.assetNetwork(
+                                  placeholder: 'assets/images/loading2.gif',
+                                  image: movie.largeCoverImage!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.asset(
+                                  'assets/images/noImageAvailable.jpg')),
                     ),
                   ),
                 ),
@@ -288,8 +300,12 @@ class RandomMovieButton extends StatelessWidget {
       alignment: Alignment.topLeft,
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => RandomMovieScreen()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RandomMovieScreen(
+                        movies: _movies!,
+                      )));
         },
         child: Container(
           height: 46,
@@ -302,7 +318,7 @@ class RandomMovieButton extends StatelessWidget {
               width: 3, // Stroke width
             ),
             shape: BoxShape.circle,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 blurRadius: 40, // Blur radius
                 color: Colors.transparent, // Transparent color for the blur

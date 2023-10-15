@@ -4,10 +4,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:the_top_movies/constants/my_colors.dart';
+import 'package:the_top_movies/data_layer/models/movie.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
 
 class RandomMovieScreen extends StatefulWidget {
-  const RandomMovieScreen({super.key});
+  final List<Movie> movies;
+  const RandomMovieScreen({super.key, required this.movies});
 
   @override
   State<RandomMovieScreen> createState() => _RandomMovieScreenState();
@@ -28,6 +30,9 @@ class _RandomMovieScreenState extends State<RandomMovieScreen> {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
+    List<Movie> movies = widget.movies;
+
     return Scaffold(
       backgroundColor: MyColors.black,
       body: Stack(
@@ -62,9 +67,36 @@ class _RandomMovieScreenState extends State<RandomMovieScreen> {
                     // and we will wrap it in a Transform widget
                     //then we will make a tween animation for animating our card
                     //now let's wrap our tween animation inside a gesture detector
+                    Text(
+                      'Are you confused what to watch?',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 28.sp,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      'click on the card!',
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 18.sp),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
 
                     GestureDetector(
-                      onTap: _flip,
+                      onTap: () {
+                        setState(() {
+                          angle = (angle + pi) % (2 * pi);
+                          if (angle != 0) {
+                            movies.shuffle();
+                          }
+                        });
+                      },
                       child: TweenAnimationBuilder(
                           tween: Tween<double>(begin: 0, end: angle),
                           duration: Duration(seconds: 1),
@@ -76,12 +108,12 @@ class _RandomMovieScreenState extends State<RandomMovieScreen> {
                               isBack = true;
                             }
                             return (Transform(
-                              //let's make the card flip by it's center
-                              alignment: Alignment.center,
-                              transform: Matrix4.identity()
-                                ..setEntry(3, 2, 0.001)
-                                ..rotateY(val),
-                              child: Container(
+                                //let's make the card flip by it's center
+                                alignment: Alignment.center,
+                                transform: Matrix4.identity()
+                                  ..setEntry(3, 2, 0.001)
+                                  ..rotateY(val),
+                                child: Container(
                                   width: 275.w,
                                   height: 380.h,
                                   child: isBack
@@ -114,19 +146,20 @@ class _RandomMovieScreenState extends State<RandomMovieScreen> {
                                                 width: 255.w,
                                                 height: 365.h,
                                                 decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            'assets/images/large_cover.jpg'),
-                                                        fit: BoxFit.cover)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Image.network(
+                                                  movies.first.largeCoverImage!,
+                                                  width: 255.w,
+                                                  height: 365.h,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
+                                          ) //else we will display it here,
                                           ),
-                                        ) //else we will display it here,
-                                  ),
-                            ));
+                                )));
                           }),
                     )
                   ],

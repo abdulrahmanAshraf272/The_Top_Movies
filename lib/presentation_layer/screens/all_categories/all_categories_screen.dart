@@ -8,7 +8,6 @@ import 'package:the_top_movies/data_layer/models/movie.dart';
 import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
 import 'package:the_top_movies/presentation_layer/screens/movie_details/movie_details_screen.dart';
 import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/search_feild.dart';
 import 'package:the_top_movies/presentation_layer/screens/random_movie/random_movie_screen.dart';
 import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
 
@@ -65,6 +64,11 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  bool _isSearching = false;
+  final _searchTextController = TextEditingController();
+  late List<Movie> searchedForMovies;
+  late List<Movie> allMovies;
+
   int selectedIndex = 0;
   List<String> categories = [
     'all',
@@ -90,9 +94,52 @@ class _BodyState extends State<Body> {
   ];
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     BlocProvider.of<MovieCubit>(context).emitgetBestMovies('');
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+        height: 48,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(10)),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search,
+              color: Colors.white.withOpacity(0.5),
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Expanded(
+                child: TextField(
+                    controller: _searchTextController,
+                    style: const TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                        hintText: 'Search',
+                        hintStyle: TextStyle(
+                          color: Colors.white.withOpacity(0.5),
+                        ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none),
+                    onChanged: (searchedMovie) {
+                      addSearchedItemsToSearchedList(searchedMovie);
+                    }))
+          ],
+        ));
+  }
+
+  void addSearchedItemsToSearchedList(String searchedMovie) {
+    searchedForMovies = _movies
+        .where((movie) => movie.title!.toLowerCase().startsWith(searchedMovie))
+        .toList();
+
+    setState(() {});
   }
 
   @override
@@ -100,11 +147,11 @@ class _BodyState extends State<Body> {
     return SafeArea(
       child: Column(
         children: [
-          RandomMovieButton(),
-          TopTextHeader(
+          const RandomMovieButton(),
+          const TopTextHeader(
             text: 'What would you like to watch?',
           ),
-          SearchFeild(),
+          _buildSearchField(),
           SizedBox(
             height: 35,
             child: ListView.builder(
@@ -142,7 +189,9 @@ class _BodyState extends State<Body> {
                     return Column(
                       children: [
                         GridView.builder(
-                            itemCount: movies.length,
+                            itemCount: _searchTextController.text.isEmpty
+                                ? _movies.length
+                                : searchedForMovies.length,
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
@@ -155,7 +204,9 @@ class _BodyState extends State<Body> {
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
                               return MovieItem(
-                                movie: _movies[index],
+                                movie: _searchTextController.text.isEmpty
+                                    ? _movies[index]
+                                    : searchedForMovies[index],
                               );
                             })
                       ],

@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:the_top_movies/data_layer/models/movie.dart';
-import 'package:the_top_movies/presentation_layer/screens/movie_details/components/buttons.dart';
-import 'package:the_top_movies/presentation_layer/screens/movie_details/components/likes.dart';
+
 import 'package:the_top_movies/presentation_layer/screens/movie_details/components/movie_name.dart';
 import 'package:the_top_movies/presentation_layer/screens/movie_details/components/rate.dart';
 import 'package:the_top_movies/presentation_layer/screens/movie_details/components/year_and_genre.dart';
@@ -17,7 +15,6 @@ class MovieDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    double statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(

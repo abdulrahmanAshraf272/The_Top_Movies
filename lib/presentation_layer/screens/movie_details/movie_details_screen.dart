@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
+import '../../../data_layer/models/movie.dart';
 
-import 'package:the_top_movies/presentation_layer/screens/movie_details/components/movie_name.dart';
-import 'package:the_top_movies/presentation_layer/screens/movie_details/components/rate.dart';
-import 'package:the_top_movies/presentation_layer/screens/movie_details/components/year_and_genre.dart';
+import 'components/movie_name.dart';
+import 'components/rate.dart';
+import 'components/year_and_genre.dart';
 
 class MovieDetails extends StatelessWidget {
   final Movie movie;

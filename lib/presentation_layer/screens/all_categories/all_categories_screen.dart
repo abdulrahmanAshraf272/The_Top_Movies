@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:the_top_movies/business_logic_layer/cubit/movies_cubit.dart';
-import 'package:the_top_movies/business_logic_layer/cubit/result_state.dart';
-import 'package:the_top_movies/constants/my_colors.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
-import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
-import 'package:the_top_movies/presentation_layer/screens/movie_details/movie_details_screen.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
-import 'package:the_top_movies/presentation_layer/screens/random_movie/random_movie_screen.dart';
-import 'package:the_top_movies/presentation_layer/widgets/top_title_header.dart';
+import '../../../business_logic_layer/cubit/movies_cubit.dart';
+import '../../../business_logic_layer/cubit/result_state.dart';
+import '../../../constants/my_colors.dart';
+import '../../../data_layer/models/movie.dart';
+import '../../../data_layer/models/network_exceptions.dart';
+import '../movie_details/movie_details_screen.dart';
+import 'components/light_decoration.dart';
+import '../random_movie/random_movie_screen.dart';
+import '../../widgets/top_title_header.dart';
 
 List<Movie> _movies = [];
 
@@ -64,10 +64,11 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  bool _isSearching = false;
   final _searchTextController = TextEditingController();
   late List<Movie> searchedForMovies;
   late List<Movie> allMovies;
+
+  bool isLoading = false;
 
   int selectedIndex = 0;
   List<String> categories = [
@@ -95,7 +96,6 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<MovieCubit>(context).emitgetBestMovies('');
   }
 
   Widget _buildSearchField() {
@@ -144,6 +144,8 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<MovieCubit>(context)
+        .emitgetBestMovies(categories[selectedIndex]);
     return SafeArea(
       child: Column(
         children: [
@@ -170,21 +172,18 @@ class _BodyState extends State<Body> {
               child: BlocBuilder<MovieCubit, ResultState<dynamic>>(
                 builder: (context, ResultState<dynamic> state) {
                   return state.when(idle: () {
-                    print('idle state');
                     return Center(
                       child: CircularProgressIndicator(
                         color: Colors.white.withOpacity(0.6),
                       ),
                     );
                   }, loading: () {
-                    print('loading state');
                     return Center(
                       child: CircularProgressIndicator(
                         color: Colors.white.withOpacity(0.6),
                       ),
                     );
                   }, success: (dynamic movies) {
-                    print('hello world');
                     _movies = movies;
                     return Column(
                       children: [
@@ -234,8 +233,6 @@ class _BodyState extends State<Body> {
       onTap: () {
         setState(() {
           selectedIndex = index;
-          BlocProvider.of<MovieCubit>(context)
-              .emitgetBestMovies(categories[index]);
         });
       },
       child: Container(

@@ -1,5 +1,5 @@
-import 'package:the_top_movies/data_layer/models/data.dart';
-import 'package:the_top_movies/data_layer/models/meta_data.dart';
+import 'data.dart';
+import 'meta_data.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'api_response.g.dart';

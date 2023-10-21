@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:the_top_movies/business_logic_layer/cubit/result_state.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
-import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
-import 'package:the_top_movies/data_layer/repositories/movies_repository.dart';
-import 'package:the_top_movies/injection.dart';
+import 'result_state.dart';
+import '../../data_layer/models/movie.dart';
+import '../../data_layer/models/network_exceptions.dart';
+import '../../data_layer/repositories/movies_repository.dart';
+import '../../injection.dart';
 
 //part 'my_state.dart';
 

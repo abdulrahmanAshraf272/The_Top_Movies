@@ -1,8 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:the_top_movies/data_layer/models/api_response.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
+import '../models/api_response.dart';
 
 part 'movies_web_services.g.dart';
 

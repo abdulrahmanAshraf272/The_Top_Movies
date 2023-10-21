@@ -1,10 +1,9 @@
-import 'package:dio/dio.dart';
-import 'package:the_top_movies/data_layer/models/api_response.dart';
-import 'package:the_top_movies/data_layer/models/api_result.dart';
-import 'package:the_top_movies/data_layer/models/data.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
-import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
-import 'package:the_top_movies/data_layer/web_services/movies_web_services.dart';
+import '../models/api_response.dart';
+import '../models/api_result.dart';
+import '../models/data.dart';
+import '../models/movie.dart';
+import '../models/network_exceptions.dart';
+import '../web_services/movies_web_services.dart';
 
 class MoviesRepo {
   final MoviesWebServices moviesWebServices;

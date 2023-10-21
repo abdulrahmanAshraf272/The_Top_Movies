@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import 'package:the_top_movies/business_logic_layer/cubit/movies_cubit.dart';
-import 'package:the_top_movies/data_layer/repositories/movies_repository.dart';
-import 'package:the_top_movies/data_layer/web_services/movies_web_services.dart';
+import 'business_logic_layer/cubit/movies_cubit.dart';
+import 'data_layer/repositories/movies_repository.dart';
+import 'data_layer/web_services/movies_web_services.dart';
 
 final getIt = GetIt.instance;
 

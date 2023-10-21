@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:the_top_movies/constants/my_colors.dart';
-import 'package:the_top_movies/data_layer/models/movie.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/components/light_decoration.dart';
+import '../../../constants/my_colors.dart';
+import '../../../data_layer/models/movie.dart';
+import '../all_categories/components/light_decoration.dart';
 
 class RandomMovieScreen extends StatefulWidget {
   final List<Movie> movies;

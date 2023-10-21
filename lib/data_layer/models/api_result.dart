@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:the_top_movies/data_layer/models/network_exceptions.dart';
+import 'network_exceptions.dart';
 
 part 'api_result.freezed.dart';
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:the_top_movies/constants/my_colors.dart';
 
 class ArrowBack extends StatelessWidget {
   const ArrowBack({super.key});

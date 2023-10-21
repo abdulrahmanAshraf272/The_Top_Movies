@@ -46,51 +46,6 @@ abstract class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
-  /////////////////////////////////////////////////////////////////////
-  ////////////////////////////////////////////////////////////////////
-  // == WILL CHANGE ACCORDING THE BUSINESS YOU HAVE == //
-  // static NetworkExceptions handleResponse(Response? response) {
-  //   //parsing operation: to convert the error json list of error List<Map>  => List<ErrorModel>
-  //   //according to this case ErrorModel contain 2 variables field and message;
-
-  //   List<ErrorModel> listOfErrors =
-  //       List.from(response?.data).map((e) => ErrorModel.fromJson(e)).toList();
-  //   //Converting the listofErrors to String
-  //   String allErrors = listOfErrors
-  //       .map((e) => "${e.field} : ${e.message}  ")
-  //       .toString()
-  //       .replaceAll("(", "")
-  //       .replaceAll(")", "");
-  //   //Getting the status code of that Error
-  //   int statusCode = response?.statusCode ?? 0;
-  //   //From Api docs i got the errors statusCode,
-  //   //and according to the statusCode i return different type of NetworkException according the the case i have.
-  //   //and pass the allErrors- String of all errors - to the NetworkExceptions subtype that will be returned.
-  //   switch (statusCode) {
-  //     case 400:
-  //     case 401:
-  //     case 403:
-  //       return NetworkExceptions.unauthorizedRequest(allErrors);
-  //     case 404:
-  //       return NetworkExceptions.notFound(allErrors);
-  //     case 409:
-  //       return const NetworkExceptions.conflict();
-  //     case 408:
-  //       return const NetworkExceptions.requestTimeout();
-  //     case 422:
-  //       return NetworkExceptions.unprocessableEntity(allErrors);
-  //     case 500:
-  //       return const NetworkExceptions.internalServerError();
-  //     case 503:
-  //       return const NetworkExceptions.serviceUnavailable();
-  //     default:
-  //       var responseCode = statusCode;
-  //       return NetworkExceptions.defaultError(
-  //         "Received invalid status code: $responseCode",
-  //       );
-  //   }
-  // }
-
   static NetworkExceptions getDioException(error) {
     if (error is Exception) {
       try {
@@ -126,7 +81,7 @@ abstract class NetworkExceptions with _$NetworkExceptions {
           networkExceptions = const NetworkExceptions.unexpectedError();
         }
         return networkExceptions;
-      } on FormatException catch (e) {
+      } on FormatException {
         return const NetworkExceptions.formatException();
       } catch (_) {
         return const NetworkExceptions.unexpectedError();

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:the_top_movies/business_logic_layer/cubit/movies_cubit.dart';
-import 'package:the_top_movies/injection.dart';
-import 'package:the_top_movies/presentation_layer/screens/all_categories/all_categories_screen.dart';
+import 'business_logic_layer/cubit/movies_cubit.dart';
+import 'injection.dart';
+import 'presentation_layer/screens/all_categories/all_categories_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
